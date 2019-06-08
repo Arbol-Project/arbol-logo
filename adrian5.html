@@ -257,9 +257,7 @@
    		            )
 		        )
 				}
-	//		else {
-	//			polygons.push(new Polygon(createRect(1000000,1000000,10000000,1000000,1000000,1000000,1000000,1000000)))
-	//		}
+
                 hexitr = nextHex(hexitr)
 			//}
 			
@@ -273,13 +271,21 @@
         hexitr = (loops * 9) % 11
         console.log("loop: " + loops)
         for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-            console.log("hex: " + hexitr  )
-				if ((hexesDrawn * 6 + loops) != 66) {          
+				if ((hexesDrawn * 6 + loops) != 66) {          //fix stray cell... dont know why this works
 			 	    updateRect( // front view
 		        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
 		             	hexes[nextHex(hexitr)][loops][0] + 200, hexes[nextHex(hexitr)][loops][1] + 200,
 		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0] + 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] + 200,
 		        	    hexes[hexitr][nextVertex(loops)][0] + 200, hexes[hexitr][nextVertex(loops)][1] + 200,
+		        	    polygons[((hexesDrawn * 6) + loops) % 72]
+		            );
+			 	}
+			 	else {
+			 		updateRect( // front view
+		        	    hexes[hexitr][loops][0] - 200, hexes[hexitr][loops][1] - 200, 
+		             	hexes[nextHex(hexitr)][loops][0] - 200, hexes[nextHex(hexitr)][loops][1] - 200,
+		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0] - 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] - 200,
+		        	    hexes[hexitr][nextVertex(loops)][0] - 200, hexes[hexitr][nextVertex(loops)][1] - 200,
 		        	    polygons[((hexesDrawn * 6) + loops) % 72]
 		            );
 			 	}
