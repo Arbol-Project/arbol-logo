@@ -73,7 +73,8 @@
 	var hexes = []
     var rectangles = []
 
-	var offset = -135
+//	var offset = -135
+	var offset = -280
 
 	var lookCurrent = [0, 0]
 	var shouldRender = true
@@ -122,12 +123,12 @@
 
 	function createRect(x1, y1, x2, y2, x3, y3, x4, y4) {
 		var color
-		if (counter ==66) {
-			color = "rgb(0, 0, 0)"
-		}
-		else { 
+	//	if (counter ==66) {
+	//		color = "rgb(0, 0, 0)"
+	//	}
+	//	else { 
 			color = generateColor()
-		}
+	//	}
 
 		counter++;
 
@@ -244,7 +245,7 @@
 
 	function buildPolygons() {
         for (let loops = 0; loops < 6; loops++) {
-            hexitr = (loops * 9) % 11
+            hexitr = ((loops +6) * 9) % 11
         for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
        // 	if ((hexesDrawn * 6 + loops) != 66) {
 				polygons.push( new Polygon(
@@ -268,10 +269,10 @@
 
 	function updatePolygons() {
     for (let loops = 0; loops < 6; loops++) {
-        hexitr = (loops * 9) % 11
+        hexitr = ((loops+6) * 9) % 11
         console.log("loop: " + loops)
         for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-				if ((hexesDrawn * 6 + loops) != 66) {          //fix stray cell... dont know why this works
+		//		if ((hexesDrawn * 6 + loops) != 66) {          //fix stray cell... dont know why this works
 			 	    updateRect( // front view
 		        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
 		             	hexes[nextHex(hexitr)][loops][0] + 200, hexes[nextHex(hexitr)][loops][1] + 200,
@@ -279,16 +280,16 @@
 		        	    hexes[hexitr][nextVertex(loops)][0] + 200, hexes[hexitr][nextVertex(loops)][1] + 200,
 		        	    polygons[((hexesDrawn * 6) + loops) % 72]
 		            );
-			 	}
-			 	else {
-			 		updateRect( // front view
-		        	    hexes[hexitr][loops][0] - 200, hexes[hexitr][loops][1] - 200, 
-		             	hexes[nextHex(hexitr)][loops][0] - 200, hexes[nextHex(hexitr)][loops][1] - 200,
-		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0] - 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] - 200,
-		        	    hexes[hexitr][nextVertex(loops)][0] - 200, hexes[hexitr][nextVertex(loops)][1] - 200,
-		        	    polygons[((hexesDrawn * 6) + loops) % 72]
-		            );
-			 	}
+			 	//}
+			 	// else {
+			 	// 	updateRect( // front view
+		   //      	    hexes[hexitr][loops][0] - 200, hexes[hexitr][loops][1] - 200, 
+		   //           	hexes[nextHex(hexitr)][loops][0] - 200, hexes[nextHex(hexitr)][loops][1] - 200,
+		   //      	    hexes[nextHex(hexitr)][nextVertex(loops)][0] - 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] - 200,
+		   //      	    hexes[hexitr][nextVertex(loops)][0] - 200, hexes[hexitr][nextVertex(loops)][1] - 200,
+		   //      	    polygons[((hexesDrawn * 6) + loops) % 72]
+		   //          );
+			 	// }
 			
             hexitr = nextHex(hexitr)
             }
