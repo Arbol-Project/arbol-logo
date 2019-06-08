@@ -111,18 +111,29 @@
     var c2 = 20
     var c3 = 0
 
-    function color() {
+    function generateColor() {
         c1 = c1 + 3
         c2 = c2 + 5
         c3 = (c3 + 50 )% 255
     	return "rgb(" + c1 + ", " + c2 + ", " +  c3 + ")"
     }
     
+    var counter = 0
 
 	function createRect(x1, y1, x2, y2, x3, y3, x4, y4) {
+		var color
+		if (counter ==66) {
+			color = "rgb(0, 0, 0)"
+		}
+		else { 
+			color = generateColor()
+		}
+
+		counter++;
+
 		var rect = createNode('polygon')
 		setAttribute(rect, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4)
-		setAttribute(rect, 'style', "fill:" + color() + ";stroke:black;stroke-width:.2")
+		setAttribute(rect, 'style', "fill:" + color + ";stroke:black;stroke-width:.2")
 		container.appendChild(rect)
 		return rect
 	}
@@ -232,10 +243,10 @@
 
 
 	function buildPolygons() {
-    //    console.log(angles)
         for (let loops = 0; loops < 6; loops++) {
             hexitr = (loops * 9) % 11
-        for(hexesDrawn = 11; hexesDrawn >= 0; hexesDrawn--) {
+        for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
+       // 	if ((hexesDrawn * 6 + loops) != 66) {
 				polygons.push( new Polygon(
 				    createRect(
 		        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
@@ -245,8 +256,13 @@
 		            )
    		            )
 		        )
+				}
+	//		else {
+	//			polygons.push(new Polygon(createRect(1000000,1000000,10000000,1000000,1000000,1000000,1000000,1000000)))
+	//		}
                 hexitr = nextHex(hexitr)
-			}
+			//}
+			
 	    }
 	}
 
@@ -256,15 +272,17 @@
     for (let loops = 0; loops < 6; loops++) {
         hexitr = (loops * 9) % 11
         console.log("loop: " + loops)
-        for(hexesDrawn = 11; hexesDrawn >= 0; hexesDrawn--) {
+        for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
             console.log("hex: " + hexitr  )
-		 	    updateRect( // front view
-	        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
-	             	hexes[nextHex(hexitr)][loops][0] + 200, hexes[nextHex(hexitr)][loops][1] + 200,
-	        	    hexes[nextHex(hexitr)][nextVertex(loops)][0] + 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] + 200,
-	        	    hexes[hexitr][nextVertex(loops)][0] + 200, hexes[hexitr][nextVertex(loops)][1] + 200,
-	        	    polygons[((hexesDrawn * 6) + loops + 5) % 72]
-	            );
+				if ((hexesDrawn * 6 + loops) != 66) {          
+			 	    updateRect( // front view
+		        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
+		             	hexes[nextHex(hexitr)][loops][0] + 200, hexes[nextHex(hexitr)][loops][1] + 200,
+		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0] + 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] + 200,
+		        	    hexes[hexitr][nextVertex(loops)][0] + 200, hexes[hexitr][nextVertex(loops)][1] + 200,
+		        	    polygons[((hexesDrawn * 6) + loops) % 72]
+		            );
+			 	}
 			
             hexitr = nextHex(hexitr)
             }
