@@ -73,11 +73,15 @@
 	var hexes = []
     var rectangles = []
 
-//	var offset = -135
-	var offset = -280
+	var offset = 78
 
-	var lookCurrent = [0, 0]
+	var turnRate = 7
+
+	var followCursor = true//!!options.followMouse
+//	var followMotion = !!options.followMotion
+	//var slowDrift = !!options.slowDrift
 	var shouldRender = true
+
 
 	var X = new Float32Array([1, 0, 0])
 	var Y = new Float32Array([0, 1, 0])
@@ -100,17 +104,36 @@
     }
 
     polygons = []
- //   function color() {
-   // 	return "rgb(255, 255, 255)"
-    //}
-    
 
-   angles = []
 
+    logo_colors = [
+    'rgb(106, 169, 88)', 'rgb(103, 171, 87)', 'rgb(99, 174, 83)', 'rgb(99, 174, 83)', 'rgb(103, 171, 87)', 'rgb(106, 169, 88)',
+	'rgb(75. 153. 93)', 'rgb(75. 153. 93)', 'rgb(103, 171, 88)', 'rgb(102, 169, 89)', 'rgb(102, 169, 89)', 'rgb(103, 171, 88)',
+	'rgb(87, 174, 119)', 'rgb(87, 174, 119)', 'rgb(91, 172, 121)', 'rgb(111, 170, 79)', 'rgb(111, 170, 79)', 'rgb(91, 172, 121)'
+	]
+
+
+    // logo_colors = [
+   	// 'rgb(121, 129, 79)', 'rgb(121, 130, 75)', 'rgb(121, 130, 73)', 'rgb(121, 129, 79)', 'rgb(121, 130, 75)', 'rgb(121, 130, 73)',
+   	// 'rgb(112, 123, 80)', 'rgb(121, 130, 75)', 'rgb(121, 130, 73)', 'rgb(121, 129, 79)', 'rgb(121, 130, 75)', 'rgb(121, 130, 73)',
+   	// 'rgb(112, 123, 80)', 'rgb(113, 137, 85)', 'rgb(121, 130, 73)', 'rgb(121, 129, 79)', 'rgb(121, 130, 75)', 'rgb(121, 130, 73)',
+   	// ]
+
+   	currentColor = 0
+   	function yieldColor() {
+   		currentColor = (currentColor + 1) % logo_colors.length
+   		return logo_colors[currentColor]
+   	}
 
     var c1 = 45
     var c2 = 20
     var c3 = 0
+
+
+      var mouse = {
+    x: 0,
+    y: 0
+  }
 
     function generateColor() {
         c1 = c1 + 3
@@ -119,22 +142,10 @@
     	return "rgb(" + c1 + ", " + c2 + ", " +  c3 + ")"
     }
     
-    var counter = 0
-
 	function createRect(x1, y1, x2, y2, x3, y3, x4, y4) {
-		var color
-	//	if (counter ==66) {
-	//		color = "rgb(0, 0, 0)"
-	//	}
-	//	else { 
-			color = generateColor()
-	//	}
-
-		counter++;
-
 		var rect = createNode('polygon')
 		setAttribute(rect, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4)
-		setAttribute(rect, 'style', "fill:" + color + ";stroke:black;stroke-width:.2")
+		setAttribute(rect, 'style', "fill:" + yieldColor() + ";stroke:black;stroke-width:.2")
 		container.appendChild(rect)
 		return rect
 	}
@@ -200,11 +211,7 @@
 	}
 
 
-    logo_colors = [
-   	'rbg(121, 129, 79)', 'rbg(121, 130, 75)', 'rbg(121, 130, 73)', 'rbg(121, 129, 79)', 'rbg(121, 130, 75)', 'rbg(121, 130, 73)',
-   	'rbg(112, 123, 80)', 'rbg(121, 130, 75)', 'rbg(121, 130, 73)', 'rbg(121, 129, 79)', 'rbg(121, 130, 75)', 'rbg(121, 130, 73)',
-   	'rbg(112, 123, 80)', 'rbg(113, 137, 85)', 'rbg(121, 130, 73)', 'rbg(121, 129, 79)', 'rbg(121, 130, 75)', 'rbg(121, 130, 73)',
-   	]
+
 
     function nextHex(currentHex){
     	if (currentHex < hexes.length - 1) {
@@ -245,9 +252,8 @@
 
 	function buildPolygons() {
         for (let loops = 0; loops < 6; loops++) {
-            hexitr = ((loops +6) * 9) % 11
+            hexitr = ((loops +17) * 9) % 11	// the magic
         for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-       // 	if ((hexesDrawn * 6 + loops) != 66) {
 				polygons.push( new Polygon(
 				    createRect(
 		        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
@@ -259,9 +265,7 @@
 		        )
 				}
 
-                hexitr = nextHex(hexitr)
-			//}
-			
+                hexitr = nextHex(hexitr)			
 	    }
 	}
 
@@ -269,47 +273,71 @@
 
 	function updatePolygons() {
     for (let loops = 0; loops < 6; loops++) {
-        hexitr = ((loops+6) * 9) % 11
-        console.log("loop: " + loops)
+        hexitr = ((loops+17) * 9) % 11  // the magic
         for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-		//		if ((hexesDrawn * 6 + loops) != 66) {          //fix stray cell... dont know why this works
 			 	    updateRect( // front view
 		        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
 		             	hexes[nextHex(hexitr)][loops][0] + 200, hexes[nextHex(hexitr)][loops][1] + 200,
 		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0] + 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] + 200,
 		        	    hexes[hexitr][nextVertex(loops)][0] + 200, hexes[hexitr][nextVertex(loops)][1] + 200,
 		        	    polygons[((hexesDrawn * 6) + loops) % 72]
-		            );
-			 	//}
-			 	// else {
-			 	// 	updateRect( // front view
-		   //      	    hexes[hexitr][loops][0] - 200, hexes[hexitr][loops][1] - 200, 
-		   //           	hexes[nextHex(hexitr)][loops][0] - 200, hexes[nextHex(hexitr)][loops][1] - 200,
-		   //      	    hexes[nextHex(hexitr)][nextVertex(loops)][0] - 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] - 200,
-		   //      	    hexes[hexitr][nextVertex(loops)][0] - 200, hexes[hexitr][nextVertex(loops)][1] - 200,
-		   //      	    polygons[((hexesDrawn * 6) + loops) % 72]
-		   //          );
-			 	// }
-			
+		            );			
             hexitr = nextHex(hexitr)
             }
 	    }
 	}
 
+
+  function setTurnTo(target) {
+    var bounds = container.getBoundingClientRect()
+    mouse.x = 1.0 - 2.0 * (target.x - bounds.left) / bounds.width
+    mouse.y = 1.0 - 2.0 * (target.y - bounds.top) / bounds.height
+  }
+
+
+
 	function stopAnimation() { shouldRender = false }
 	function startAnimation() { shouldRender = true }
+	function setFollowMouse (state) { followCursor = state }
+	function setFollowMotion (state) { followMotion = state }	
+
+    var loaded = false
+
+	var previousMouseY = 0
+	var previousMouseX = 0
 
 	window.addEventListener('mousemove', function (ev) {
-	if (!shouldRender) { startAnimation() }
-		lookCurrent[0] = ev.clientX
-		lookCurrent[1] = ev.clientY
-	    renderScene()
+		if (!shouldRender) { startAnimation() }		
+	  	if (followCursor) {
+      		setTurnTo({
+        		x: ev.clientX,
+       			y: ev.clientY,
+   			})
+ 	  		if (!loaded) {
+	  			previousMouseX = mouse.x
+	  			previousMouseY = mouse.y
+	  			loaded = true
+	  		}  			
+	   		renderScene()
+		}	
 	})
+
+
 
 	function renderScene () {
 		if (!shouldRender) return
 		window.requestAnimationFrame(renderScene)
-		offset = (offset - 1) //% 360  //lookCurrent[0].x % 360
+		console.log("before offset: "+ offset)
+		offset = 
+			offset - 
+				(Math.abs(
+					(Math.sqrt(Math.abs(Math.abs(previousMouseY) - Math.abs(mouse.y)))) + 
+					(Math.sqrt(Math.abs(Math.abs(previousMouseX) - Math.abs(mouse.x))))) * 
+				turnRate)
+		console.log("after offset: " + offset) 
+		previousMouseY = mouse.y
+		previousMouseX = mouse.x
+
    		buildAnnulus(100,50);
 		shiftMobius()
 		updatePolygons()
