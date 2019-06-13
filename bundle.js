@@ -20,8 +20,8 @@ var createViewer = require('../index')
 
 var viewer = createViewer({
   pxNotRatio: true,
-  width: 75,
-  height: 75,
+  width: 500,
+  height: 500,
   followMouse: true,
   followMotion: true,
 })
