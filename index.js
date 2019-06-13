@@ -91,6 +91,8 @@ module.exports = function createLogo (options_) {
     }
   }
 
+  setAttribute(container, 'width', width + 'px')
+  setAttribute(container, 'height', height + 'px')
 	document.body.appendChild(container)
 
 	var NUM_HEX = 12;
@@ -153,7 +155,6 @@ module.exports = function createLogo (options_) {
 	function updateRect(x1, y1, x2, y2, x3, y3, x4, y4, polygon) {
     setAttribute(polygon.svg, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4);
 	}
-
 
 	function buildAnnulus(mrad,hrad,centerX,centerY) {
 		hexes = []

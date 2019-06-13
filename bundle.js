@@ -121,8 +121,7 @@ module.exports = function createLogo (options_) {
       height = (options.minWidth * options.height / options.width) | 0
     }
   }
-  console.log("width: " + width)
-  console.log("height: " + height)
+
   setAttribute(container, 'width', width + 'px')
   setAttribute(container, 'height', height + 'px')
 	document.body.appendChild(container)
@@ -187,12 +186,6 @@ module.exports = function createLogo (options_) {
 	function updateRect(x1, y1, x2, y2, x3, y3, x4, y4, polygon) {
     setAttribute(polygon.svg, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4);
 	}
-
-  ex = width/2
-  why = height/2
-
-      createRect(ex-10,why-10,ex-10,why+10,ex+10,why+10,ex+10,why-10)
-
 
 	function buildAnnulus(mrad,hrad,centerX,centerY) {
 		hexes = []
