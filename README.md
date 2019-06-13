@@ -20,7 +20,7 @@ var viewer = ModelViewer({
   // width: 0.9,
   // height: 0.9,
 
-  // To make the face follow the mouse.
+  // To make the shape follow the mouse.
   followMouse: false,
 
   // shape should slowly turn (TODO)
