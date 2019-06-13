@@ -1,17 +1,17 @@
 {
-  "name": "metamask-logo",
-  "version": "2.2.0",
-  "description": "A browserifyable 3d metamask logo. [Live demo](http://metamask.github.io/metamask-logo/).",
+  "name": "arbol-logo",
+  "version": "0.1.0",
+  "description": "An animated arbol logo for the browser.",
   "main": "index.js",
   "scripts": {
     "build": "browserify example/example.js -g uglifyify -o bundle.js",
     "start": "wzrd example/example.js:bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "MetaMask",
+  "author": "Arbol",
   "license": "ISC",
   "dependencies": {
-    "gl-mat4": "^1.1.4",
+    "gl-mat4": "1.1.4",
     "gl-vec3": "1.0.3"
   },
   "devDependencies": {
@@ -22,10 +22,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/metamask-logo.git"
+    "url": "https://github.com/Arbol-Project/arbol-logo.git"
   },
   "bugs": {
-    "url": "https://github.com/MetaMask/metamask-logo/issues"
+    "url": "https://github.com/Arbol-Project/arbol-logo/issues"
   },
-  "homepage": "https://github.com/MetaMask/metamask-logo#readme"
+  "homepage": "https://github.com/Arbol-Project/arbol-logo/blob/master/README.md"
 }
