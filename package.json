@@ -4,7 +4,7 @@
   "description": "An animated arbol logo for the browser.",
   "main": "index.js",
   "scripts": {
-    "build": "browserify example/example.js -g uglifyify -o bundle.js",
+    "build": "browserify example/example.js -o bundle.js",
     "start": "wzrd example/example.js:bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
