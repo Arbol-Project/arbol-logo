@@ -15,7 +15,7 @@ var viewer = ModelViewer({
   // Dictates whether width & height are px or multiplied
   pxNotRatio: true,
   width: 500,
-  height: 400,
+  height: 500,
   // pxNotRatio: false,
   // width: 0.9,
   // height: 0.9,
