@@ -95,6 +95,7 @@ module.exports = function createLogo (options_) {
   setAttribute(container, 'height', height + 'px')
 	document.body.appendChild(container)
 
+  var lineThickness = container.getBoundingClientRect().width * 0.0012
 	var NUM_HEX = 12;
 
 	var hexes = []
@@ -147,7 +148,7 @@ module.exports = function createLogo (options_) {
 	function createRect(x1, y1, x2, y2, x3, y3, x4, y4) {
 		var rect = createNode('polygon')
 		setAttribute(rect, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4)
-		setAttribute(rect, 'style', "fill:" + yieldColor() + ";stroke:black;stroke-width:.6")
+		setAttribute(rect, 'style', "fill:" + yieldColor() + ";stroke:black;stroke-width:" + lineThickness)
 		container.appendChild(rect)
 		return rect
 	}
