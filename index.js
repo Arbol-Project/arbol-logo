@@ -67,28 +67,41 @@ function rotate(out, a, rad, axis) {
 
 
 module.exports = function createLogo (options_) {
+  var options = options_ || {}
+
+
+  var width = options.width || 400
+  var height = options.height || 400
+
+  var followCursor = !!options.followMouse
+  var followMotion = !!options.followMotion
+  var slowDrift = !!options.slowDrift
+  var shouldRender = true
 
 	var container = createNode('svg')
 
-	setAttribute(container, 'width', 500 + 'px')
-	setAttribute(container, 'height', 500 + 'px')
+  if (!options.pxNotRatio) {
+    width = (window.innerWidth * (options.width || 0.25)) | 0
+    height = ((window.innerHeight * options.height) || width) | 0
+    console.log("ASDFASDF")
 
+    if ('minWidth' in options && width < options.minWidth) {
+      width = options.minWidth
+      height = (options.minWidth * options.height / options.width) | 0
+    }
+  }
+  console.log("width: " + width)
+  console.log("height: " + height)
+  setAttribute(container, 'width', width + 'px')
+  setAttribute(container, 'height', height + 'px')
 	document.body.appendChild(container)
 
 	var NUM_HEX = 12;
 
 	var hexes = []
-    var rectangles = []
-
+  var rectangles = []
 	var offset = -78
-
 	var turnRate = 7
-
-	var followCursor = true//!!options.followMouse
-//	var followMotion = !!options.followMotion
-	//var slowDrift = !!options.slowDrift
-	var shouldRender = true
-
 
 	var X = new Float32Array([1, 0, 0])
 	var Y = new Float32Array([0, 1, 0])
@@ -141,52 +154,58 @@ module.exports = function createLogo (options_) {
 	}
 
 	function updateRect(x1, y1, x2, y2, x3, y3, x4, y4, polygon) {
-		setAttribute(polygon.svg, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4)
+    setAttribute(polygon.svg, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4);
 	}
 
-	function buildAnnulus(mrad,hrad) {
+  ex = width/2
+  why = height/2
+
+      createRect(ex-10,why-10,ex-10,why+10,ex+10,why+10,ex+10,why-10)
+
+
+	function buildAnnulus(mrad,hrad,centerX,centerY) {
 		hexes = []
-        angles = []
-	    // build the ring
+    angles = []
+    // build the ring
 		for(let hexitr = 0; hexitr < NUM_HEX; ++hexitr) {
 			//find centroids of hexagons
 			let cang = hexitr*360/NUM_HEX;
 			let centroid = {
-				x:Math.cos(rad(cang + offset))*mrad,
-				y:Math.sin(rad(cang + offset))*mrad,
+				x:Math.cos(rad(cang + offset))*mrad + centerX + .425 * hrad,
+				y:Math.sin(rad(cang + offset))*mrad + centerY,
 				z:-hrad/2 // shift back so that y plane intersects "shift" rotational axis.
 			};
-            angles.push(cang + offset)
-            hex = []
-	        for(let vertex = 0; vertex < 6; ++vertex) {
-	            hex.push([
-	            	centroid.x, 
-	            	Math.sin(rad(vertex * 60)) * hrad + centroid.y,
-	            	Math.cos(rad(vertex * 60)) * hrad + hrad/2
-	            ])
-	        }
-	        hexes.push(hex)
-	    }
+      angles.push(cang + offset)
+      hex = []
+        for(let vertex = 0; vertex < 6; ++vertex) {
+          hex.push([
+          	centroid.x, 
+          	Math.sin(rad(vertex * 60)) * hrad + centroid.y,
+          	Math.cos(rad(vertex * 60)) * hrad + hrad/2
+          ])
+        }
+      hexes.push(hex)
+    }
 	}
 
 	function shiftMobius() {
 		for (hexitr = 0; hexitr < hexes.length; ++hexitr) {
-	        XTran = hexes[hexitr][2][0]
-	        mat1 = new Float32Array([
-	        	hexes[hexitr][0][0] - XTran, hexes[hexitr][1][0] - XTran, hexes[hexitr][2][0] - XTran, 1,
-	        	hexes[hexitr][0][1],         hexes[hexitr][1][1],         hexes[hexitr][2][1],         1,
-	        	hexes[hexitr][0][2],         hexes[hexitr][1][2],         hexes[hexitr][2][2],         1,
-	        	1,                           1,                           1,                           1
-	        ]);
+      XTran = hexes[hexitr][2][0]
+      mat1 = new Float32Array([
+      	hexes[hexitr][0][0] - XTran, hexes[hexitr][1][0] - XTran, hexes[hexitr][2][0] - XTran, 1,
+      	hexes[hexitr][0][1],         hexes[hexitr][1][1],         hexes[hexitr][2][1],         1,
+      	hexes[hexitr][0][2],         hexes[hexitr][1][2],         hexes[hexitr][2][2],         1,
+      	1,                           1,                           1,                           1
+      ]);
 
-	        mat2 = new Float32Array([
-	        	hexes[hexitr][3][0] - XTran, hexes[hexitr][4][0] - XTran, hexes[hexitr][5][0] - XTran, 1,
-	        	hexes[hexitr][3][1],         hexes[hexitr][4][1],         hexes[hexitr][5][1],         1,
-	        	hexes[hexitr][3][2],         hexes[hexitr][4][2],         hexes[hexitr][5][2],         1,
-	        	1,                           1,                           1,                           1
-	        ]);
+      mat2 = new Float32Array([
+      	hexes[hexitr][3][0] - XTran, hexes[hexitr][4][0] - XTran, hexes[hexitr][5][0] - XTran, 1,
+      	hexes[hexitr][3][1],         hexes[hexitr][4][1],         hexes[hexitr][5][1],         1,
+      	hexes[hexitr][3][2],         hexes[hexitr][4][2],         hexes[hexitr][5][2],         1,
+      	1,                           1,                           1,                           1
+      ]);
 
-	     	rotate(mat1, mat1, rad(60), Y);
+      rotate(mat1, mat1, rad(60), Y);
 			rotate(mat2, mat2, rad(60), Y);
 
 	 		hexes[hexitr][0][0] = mat1[0] + XTran; hexes[hexitr][1][0] = mat1[1] + XTran; hexes[hexitr][2][0] = mat1[2] + XTran;
@@ -199,9 +218,6 @@ module.exports = function createLogo (options_) {
 
 		}
 	}
-
-
-
 
     function nextHex(currentHex){
     	if (currentHex < hexes.length - 1) {
@@ -242,15 +258,15 @@ module.exports = function createLogo (options_) {
 
 	function buildPolygons() {
     for (let loops = 0; loops < 6; loops++) {
-      hexitr = ((loops +17) * 9) % 11; // the magic
+      hexitr = ((loops +17) * 9) % 11; // the non-euclidian magic
       for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
         polygons.push( 
           new Polygon(
 				    createRect(
-  		        hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
-  		        hexes[nextHex(hexitr)][loops][0] + 200, hexes[nextHex(hexitr)][loops][1] + 200,
-  		        hexes[nextHex(hexitr)][nextVertex(loops)][0] + 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] + 200,
-  		        hexes[hexitr][nextVertex(loops)][0] + 200, hexes[hexitr][nextVertex(loops)][1] + 200
+  		        hexes[hexitr][loops][0], hexes[hexitr][loops][1], 
+  		        hexes[nextHex(hexitr)][loops][0], hexes[nextHex(hexitr)][loops][1],
+  		        hexes[nextHex(hexitr)][nextVertex(loops)][0], hexes[nextHex(hexitr)][nextVertex(loops)][1],
+  		        hexes[hexitr][nextVertex(loops)][0], hexes[hexitr][nextVertex(loops)][1]
   		        )
             )
           );
@@ -260,16 +276,15 @@ module.exports = function createLogo (options_) {
 	}
 
 
-
 	function updatePolygons() {
     for (let loops = 0; loops < 6; loops++) {
-        hexitr = ((loops+17) * 9) % 11;  // the magic
+        hexitr = ((loops+17) * 9) % 11;  // the non-euclidian magic
         for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-			 	    updateRect( // front view
-		        	    hexes[hexitr][loops][0] + 200, hexes[hexitr][loops][1] + 200, 
-		             	hexes[nextHex(hexitr)][loops][0] + 200, hexes[nextHex(hexitr)][loops][1] + 200,
-		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0] + 200, hexes[nextHex(hexitr)][nextVertex(loops)][1] + 200,
-		        	    hexes[hexitr][nextVertex(loops)][0] + 200, hexes[hexitr][nextVertex(loops)][1] + 200,
+			 	    updateRect(
+		        	    hexes[hexitr][loops][0], hexes[hexitr][loops][1], 
+		             	hexes[nextHex(hexitr)][loops][0], hexes[nextHex(hexitr)][loops][1],
+		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0], hexes[nextHex(hexitr)][nextVertex(loops)][1],
+		        	    hexes[hexitr][nextVertex(loops)][0], hexes[hexitr][nextVertex(loops)][1],
 		        	    polygons[((hexesDrawn * 6) + loops) % 72]
 		            );			
             hexitr = nextHex(hexitr);
@@ -321,13 +336,16 @@ module.exports = function createLogo (options_) {
 		previousMouseY = mouse.y;
 		previousMouseX = mouse.x;
 
-   	buildAnnulus(100,50);
+   	buildAnnulus(width/3,width/6, width/2, height/2);
 		shiftMobius();
 		updatePolygons();
  		stopAnimation();
 	}
 
-    buildAnnulus(100,50);
+  console.log("left: " + container.getBoundingClientRect().left)
+  console.log("bottom: " + container.getBoundingClientRect().bottom)
+
+    buildAnnulus(width/3,width/6, width/2, height/2);
     shiftMobius();
     buildPolygons();
   	renderScene();
