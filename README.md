@@ -3,7 +3,9 @@
 This repo can both be included as a browserifiable module, and includes a sample app.
 
 The sample app address is `index.html`.
-The sample app javascript is `bundle.js`, which is built from `sample.js` using the `build` task (see the `package.json`).
+The sample app javascript is `bundle.js`, which is built from `examples/example.js` using the `build` task (see the `package.json`).
+
+In other words, you edit `examples/example.js`, run `$browserify example/example.js -g uglifyify -o bundle.js' and then load 'index.html' in the browser to view the logo. 
 
 ## API
 ```javascript
