@@ -31,7 +31,7 @@ document.body.appendChild(viewer.container)
 },{"../index":2,"copy-to-clipboard":3}],2:[function(require,module,exports){
 var SVG_NS = 'http://www.w3.org/2000/svg';
 var rotate = require('gl-mat4/rotate')
-
+  
 
 function createNode (type) {
   return document.createElementNS(SVG_NS, type)
@@ -46,7 +46,6 @@ function setAttribute (node, attribute, value) {
 module.exports = function createLogo (options_) {
   var options = options_ || {}
 
-
   var width = options.width || 400
   var height = options.height || 400
 
@@ -60,7 +59,6 @@ module.exports = function createLogo (options_) {
   if (!options.pxNotRatio) {
     width = (window.innerWidth * (options.width || 0.25)) | 0
     height = ((window.innerHeight * options.height) || width) | 0
-    console.log("ASDFASDF")
 
     if ('minWidth' in options && width < options.minWidth) {
       width = options.minWidth
@@ -70,11 +68,14 @@ module.exports = function createLogo (options_) {
 
   setAttribute(container, 'width', width + 'px')
   setAttribute(container, 'height', height + 'px')
+
 	document.body.appendChild(container)
 
   var lineThickness = container.getBoundingClientRect().width * 0.0012
+
 	var NUM_HEX = 12;
 
+  var polygons = []
 	var hexes = []
   var rectangles = []
 	var offset = -78
@@ -84,43 +85,41 @@ module.exports = function createLogo (options_) {
 	var Y = new Float32Array([0, 1, 0])
 	var Z = new Float32Array([0, 0, 1])
 
-    function rad(a){
-		return a*Math.PI*2/360;
+    function rad(a) {
+		return a * Math.PI * 2 / 360;
 	}
 
-    function Polygon (svg) {
-        this.svg = svg
-    }
+  function Polygon (svg) {
+      this.svg = svg
+  }
 
-    polygons = []
-
-    logo_colors = [
-    'rgb(129,152,84)', 'rgb(77,175,76)',  'rgb(71,178,72)',  'rgb(71,178,72)',  'rgb(77,175,76)',  'rgb(77,174,76)', //all invisible except 1st
-    'rgb(35,157,82)',  'rgb(35,157,82)',  'rgb(75,175,76)',  'rgb(77,175,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all visible briefly 
-    'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all a bit more visible
-    'rgb(77,174,76)',  'rgb(130,137,57)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  
-    'rgb(129,152,83)', 'rgb(126,134,61)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', 
-    'rgb(77,174,76)',  'rgb(129,137,64)', 'rgb(129,137,62)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',         
-    'rgb(77,174,76)',  'rgb(78,174,73)',  'rgb(129,136,69)', 'rgb(94,171,71)',  'rgb(94,175,77)',  'rgb(94,172,71)',
-    'rgb(75,176,76)',  'rgb(74,175,78)',  'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',  'rgb(91,176,72)',   // front
-    'rgb(78,174,76)',  'rgb(78,174,76)',  'rgb(108,145,75)', 'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',   // front also
-    'rgb(41,177,113)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)', 'rgb(129,152,84)',  // front also also
-    'rgb(43,174,116)', 'rgb(42,178,112)', 'rgb(69,176,68)',  'rgb(115,130,71)', 'rgb(129,137,62)', 'rgb(221,136,122)', // front here too
-    'rgb(89,178,68)',  'rgb(41,177,120)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)',  // mostly "edge spiral"
+  logo_colors = [
+  'rgb(129,152,84)', 'rgb(77,175,76)',  'rgb(71,178,72)',  'rgb(71,178,72)',  'rgb(77,175,76)',  'rgb(77,174,76)', //all invisible except 1st
+  'rgb(35,157,82)',  'rgb(35,157,82)',  'rgb(75,175,76)',  'rgb(77,175,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all visible briefly 
+  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all a bit more visible
+  'rgb(77,174,76)',  'rgb(130,137,57)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  
+  'rgb(129,152,83)', 'rgb(126,134,61)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', 
+  'rgb(77,174,76)',  'rgb(129,137,64)', 'rgb(129,137,62)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',         
+  'rgb(77,174,76)',  'rgb(78,174,73)',  'rgb(129,136,69)', 'rgb(94,171,71)',  'rgb(94,175,77)',  'rgb(94,172,71)',
+  'rgb(75,176,76)',  'rgb(74,175,78)',  'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',  'rgb(91,176,72)',   // front
+  'rgb(78,174,76)',  'rgb(78,174,76)',  'rgb(108,145,75)', 'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',   // front also
+  'rgb(41,177,113)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)', 'rgb(129,152,84)',  // front also also
+  'rgb(43,174,116)', 'rgb(42,178,112)', 'rgb(69,176,68)',  'rgb(115,130,71)', 'rgb(129,137,62)', 'rgb(221,136,122)', // front here too
+  'rgb(89,178,68)',  'rgb(41,177,120)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)',  // mostly "edge spiral"
 	]
 
 
 
-   	currentColor = 0
-   	function yieldColor() {
-   		currentColor = (currentColor + 1) % logo_colors.length
-   		return logo_colors[currentColor]
-   	}
+ 	currentColor = 0
+ 	function yieldColor() {
+ 		currentColor = (currentColor + 1) % logo_colors.length
+ 		return logo_colors[currentColor]
+ 	}
 
-    var mouse = {
-      x: 0,
-      y: 0
-    }
+  var mouse = {
+    x: 0,
+    y: 0
+  }
     
 	function createRect(x1, y1, x2, y2, x3, y3, x4, y4) {
 		var rect = createNode('polygon')
@@ -148,13 +147,13 @@ module.exports = function createLogo (options_) {
 			};
       angles.push(cang + offset)
       hex = []
-        for(let vertex = 0; vertex < 6; ++vertex) {
-          hex.push([
-          	centroid.x, 
-          	Math.sin(rad(vertex * 60)) * hrad + centroid.y,
-          	Math.cos(rad(vertex * 60)) * hrad + hrad/2
-          ])
-        }
+      for(let vertex = 0; vertex < 6; ++vertex) {
+        hex.push([
+        	centroid.x, 
+        	Math.sin(rad(vertex * 60)) * hrad + centroid.y,
+        	Math.cos(rad(vertex * 60)) * hrad + hrad/2
+        ])
+      }
       hexes.push(hex)
     }
 	}
@@ -190,46 +189,30 @@ module.exports = function createLogo (options_) {
 		}
 	}
 
-    function nextHex(currentHex){
-    	if (currentHex < hexes.length - 1) {
-    		return currentHex + 1;
-    	}
-    	else {
-    	    return 0
-    	}
-    }
 
-    function prevHex(currentHex) {
-        if (currentHex > 0) {
-            return currentHex - 1;
-        }
-        else {
-            return hexes.length -1
-        }
-    }
+  function nextHex(currentHex) {
+    return (currentHex + 1) % (hexes.length)
+  }
 
-    function nextVertex(currentVertex) {
-    	if (currentVertex > 0) {
-    		return currentVertex - 1
-    	}
-    	else { return 5 }
-    }
+  function prevHex(currentHex) {
+      if (currentHex > 0) {
+          return currentHex - 1;
+      }
+      else {
+          return hexes.length -1
+      }
+  }
 
-    function prevVertex(currentVertex) {
-        if (currentVertex < 5) {
-            return currentVertex + 1
-        }
-        else {
-            return 0
-        }
-    }
-
-    polygons = []
-
+  function nextVertex(currentVertex) {
+  	if (currentVertex > 0) {
+  		return currentVertex - 1
+  	}
+  	else { return 5 }
+  }
 
 	function buildPolygons() {
     for (let loops = 0; loops < 6; loops++) {
-      hexitr = ((loops +17) * 9) % 11; // the non-euclidian magic
+      hexitr = ((loops + 17) * 9) % 11; // the non-euclidian magic
       for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
         polygons.push( 
           new Polygon(
@@ -246,20 +229,19 @@ module.exports = function createLogo (options_) {
     }
 	}
 
-
 	function updatePolygons() {
     for (let loops = 0; loops < 6; loops++) {
         hexitr = ((loops+17) * 9) % 11;  // the non-euclidian magic
         for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-			 	    updateRect(
-		        	    hexes[hexitr][loops][0], hexes[hexitr][loops][1], 
-		             	hexes[nextHex(hexitr)][loops][0], hexes[nextHex(hexitr)][loops][1],
-		        	    hexes[nextHex(hexitr)][nextVertex(loops)][0], hexes[nextHex(hexitr)][nextVertex(loops)][1],
-		        	    hexes[hexitr][nextVertex(loops)][0], hexes[hexitr][nextVertex(loops)][1],
-		        	    polygons[((hexesDrawn * 6) + loops) % 72]
-		            );			
-            hexitr = nextHex(hexitr);
-            }
+		 	    updateRect(
+      	    hexes[hexitr][loops][0], hexes[hexitr][loops][1], 
+           	hexes[nextHex(hexitr)][loops][0], hexes[nextHex(hexitr)][loops][1],
+      	    hexes[nextHex(hexitr)][nextVertex(loops)][0], hexes[nextHex(hexitr)][nextVertex(loops)][1],
+      	    hexes[hexitr][nextVertex(loops)][0], hexes[hexitr][nextVertex(loops)][1],
+      	    polygons[((hexesDrawn * 6) + loops) % 72]
+          );			
+          hexitr = nextHex(hexitr);
+          }
 	    }
 	}
 
@@ -302,21 +284,19 @@ module.exports = function createLogo (options_) {
 			offset - 
 				(Math.abs(
 					(Math.sqrt(Math.abs(Math.abs(previousMouseY) - Math.abs(mouse.y)))) + 
-					(Math.sqrt(Math.abs(Math.abs(previousMouseX) - Math.abs(mouse.x))))) * 
-				turnRate);
+					(Math.sqrt(Math.abs(Math.abs(previousMouseX) - Math.abs(mouse.x)))))* 
+        turnRate
+        );
 		previousMouseY = mouse.y;
 		previousMouseX = mouse.x;
 
-   	buildAnnulus(width/3,width/6, width/2, height/2);
+   	buildAnnulus(width/3, width/6, width/2, height/2);
 		shiftMobius();
 		updatePolygons();
  		stopAnimation();
 	}
 
-  console.log("left: " + container.getBoundingClientRect().left)
-  console.log("bottom: " + container.getBoundingClientRect().bottom)
-
-    buildAnnulus(width/3,width/6, width/2, height/2);
+    buildAnnulus(width/3, width/6, width/2, height/2);
     shiftMobius();
     buildPolygons();
   	renderScene();
