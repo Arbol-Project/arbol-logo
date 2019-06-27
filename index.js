@@ -18,7 +18,7 @@ module.exports = function createLogo (options_) {
   var width = options.width || 400
   var height = options.height || 400
 
-  var followCursor = !!options.followMouse
+  var followMouse = !!options.followMouse
   var followMotion = !!options.followMotion
   var slowDrift = !!options.slowDrift
   var shouldRender = true
@@ -221,7 +221,7 @@ module.exports = function createLogo (options_) {
 
 	function stopAnimation() { shouldRender = false }
 	function startAnimation() { shouldRender = true }
-	function setFollowMouse (state) { followCursor = state }
+	function setFollowMouse (state) { followMouse = state }
 	function setFollowMotion (state) { followMotion = state }	
 
   var loaded = false
@@ -230,7 +230,7 @@ module.exports = function createLogo (options_) {
 
 	window.addEventListener('mousemove', function (ev) {
 		if (!shouldRender) { startAnimation() }		
-	  	if (followCursor) {
+	  	if (followMouse) {
       		setTurnTo({
         		x: ev.clientX,
        			y: ev.clientY,
@@ -247,15 +247,22 @@ module.exports = function createLogo (options_) {
 	function renderScene() {
 		if (!shouldRender) return
 		window.requestAnimationFrame(renderScene)
-		offset = 
-			offset - 
-				(Math.abs(
-					(Math.sqrt(Math.abs(Math.abs(previousMouseY) - Math.abs(mouse.y)))) + 
-					(Math.sqrt(Math.abs(Math.abs(previousMouseX) - Math.abs(mouse.x)))))* 
-        turnRate
-        );
-		previousMouseY = mouse.y;
-		previousMouseX = mouse.x;
+
+    if (followMouse) {
+  		offset = 
+  			offset - 
+  				(Math.abs(
+  					(Math.sqrt(Math.abs(Math.abs(previousMouseY) - Math.abs(mouse.y)))) + 
+  					(Math.sqrt(Math.abs(Math.abs(previousMouseX) - Math.abs(mouse.x)))))* 
+          turnRate
+          );
+  		previousMouseY = mouse.y;
+  		previousMouseX = mouse.x;
+    }
+    else if (slowDrift) {
+      var time = (Date.now() / 1000.0)
+      offset = offset - time
+    }
 
    	buildAnnulus(width/3, width/6, width/2, height/2);
 		shiftMobius();

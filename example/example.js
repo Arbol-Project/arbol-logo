@@ -1,19 +1,17 @@
-var copy = require('copy-to-clipboard')
+var detect = require('detect-browser').detect
+var isMobile = !!detectMobile()
 
-document.addEventListener('keypress', function (event) {
-  if (event.keyCode === 99) { // the c key
-    var svg = document.querySelector('svg')
-    var inner = svg.innerHTML
-    var head = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" '
-    + '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> '
-    + '<svg width="500px" height="500px" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">'
-    var foot = '</svg>'
-
-     var full = head + inner + foot;
-
-     copy(full)
-  }
-})
+function detectMobile() {
+  return (
+      navigator.userAgent.match(/Android/i)
+   || navigator.userAgent.match(/webOS/i)
+   || navigator.userAgent.match(/iPhone/i)
+   || navigator.userAgent.match(/iPad/i)
+   || navigator.userAgent.match(/iPod/i)
+   || navigator.userAgent.match(/BlackBerry/i)
+   || navigator.userAgent.match(/Windows Phone/i)
+  )
+}
 
 var createViewer = require('../index')
 
@@ -21,8 +19,8 @@ var viewer = createViewer({
   pxNotRatio: true,
   width: 500,
   height: 500,
-  followMouse: true,
-  followMotion: true,
+  followMouse: !isMobile,
+  slowDrift: isMobile,
 })
 
 document.body.appendChild(viewer.container)
