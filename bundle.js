@@ -20,8 +20,8 @@ var viewer = createViewer({
   pxNotRatio: true,
   width: 500,
   height: 500,
-  followMouse: false,
-  slowDrift: true,
+  followMouse: !isMobile,
+  slowDrift: isMobile,
 })
 
 document.body.appendChild(viewer.container)
@@ -77,7 +77,7 @@ module.exports = function createLogo (options_) {
 	var hexes = []
   var rectangles = []
 	var offset = -78
-	var turnRate = 7
+	var turnRate = 3.5
 
 	var X = new Float32Array([1, 0, 0])
 	var Y = new Float32Array([0, 1, 0])
