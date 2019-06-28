@@ -19,8 +19,8 @@ var viewer = createViewer({
   pxNotRatio: true,
   width: 500,
   height: 500,
-  followMouse: !isMobile,
-  slowDrift: isMobile,
+  followMouse: false,
+  slowDrift: true,
 })
 
 document.body.appendChild(viewer.container)

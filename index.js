@@ -1,6 +1,6 @@
 var SVG_NS = 'http://www.w3.org/2000/svg';
-var rotate = require('gl-mat4/rotate')
-  
+var rotate = require('gl-mat4/rotate');
+var async = require("async"); 
 
 function createNode (type) {
   return document.createElementNS(SVG_NS, type)
@@ -260,21 +260,22 @@ module.exports = function createLogo (options_) {
   		previousMouseX = mouse.x;
     }
     else if (slowDrift) {
-      var time = (Date.now() / 1000.0)
-      offset = offset - time
+      offset = offset - Date.now() / 6000000000000.0
     }
 
    	buildAnnulus(width/3, width/6, width/2, height/2);
 		shiftMobius();
 		updatePolygons();
- 		stopAnimation();
+    if (!slowDrift) {
+   		stopAnimation()
+    }
 	}
 
-    buildAnnulus(width/3, width/6, width/2, height/2);
-    shiftMobius();
-    buildPolygons();
-  	renderScene();
-
+  buildAnnulus(width/3, width/6, width/2, height/2);
+  shiftMobius();
+  buildPolygons();
+	renderScene();
+  
   return {
     container: container,
     turnTo: setTurnTo,
