@@ -83,28 +83,28 @@ module.exports = function createLogo (options_) {
 	var Y = new Float32Array([0, 1, 0])
 	var Z = new Float32Array([0, 0, 1])
 
-    function rad(a) {
+  function rad(a) {
 		return a * Math.PI * 2 / 360;
 	}
 
-  function Polygon (svg) {
-      this.svg = svg
-  }
 
-  logo_colors = [
-  'rgb(129,152,84)', 'rgb(77,175,76)',  'rgb(71,178,72)',  'rgb(71,178,72)',  'rgb(77,175,76)',  'rgb(77,174,76)', //all invisible except 1st
-  'rgb(35,157,82)',  'rgb(35,157,82)',  'rgb(75,175,76)',  'rgb(77,175,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all visible briefly 
-  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all a bit more visible
-  'rgb(77,174,76)',  'rgb(130,137,57)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  
-  'rgb(129,152,83)', 'rgb(126,134,61)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', 
-  'rgb(77,174,76)',  'rgb(129,137,64)', 'rgb(129,137,62)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',         
-  'rgb(77,174,76)',  'rgb(78,174,73)',  'rgb(129,136,69)', 'rgb(94,171,71)',  'rgb(94,175,77)',  'rgb(94,172,71)',
-  'rgb(75,176,76)',  'rgb(74,175,78)',  'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',  'rgb(91,176,72)',   // front
-  'rgb(78,174,76)',  'rgb(78,174,76)',  'rgb(108,145,75)', 'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',   // front also
-  'rgb(41,177,113)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)', 'rgb(129,152,84)',  // front also also
-  'rgb(43,174,116)', 'rgb(42,178,112)', 'rgb(69,176,68)',  'rgb(115,130,71)', 'rgb(129,137,62)', 'rgb(221,136,122)', // front here too
-  'rgb(89,178,68)',  'rgb(41,177,120)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)',  // mostly "edge spiral"
-	]
+ //  logo_colors = [
+ //  'rgb(129,152,84)', 'rgb(77,175,76)',  'rgb(71,178,72)',  'rgb(71,178,72)',  'rgb(77,175,76)',  'rgb(77,174,76)', //all invisible except 1st
+ //  'rgb(35,157,82)',  'rgb(35,157,82)',  'rgb(75,175,76)',  'rgb(77,175,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all visible briefly 
+ //  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', // all a bit more visible
+ //  'rgb(77,174,76)',  'rgb(130,137,57)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  
+ //  'rgb(129,152,83)', 'rgb(126,134,61)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)', 
+ //  'rgb(77,174,76)',  'rgb(129,137,64)', 'rgb(129,137,62)', 'rgb(77,174,76)',  'rgb(77,174,76)',  'rgb(77,174,76)',         
+ //  'rgb(77,174,76)',  'rgb(78,174,73)',  'rgb(129,136,69)', 'rgb(94,171,71)',  'rgb(94,175,77)',  'rgb(94,172,71)',
+ //  'rgb(75,176,76)',  'rgb(74,175,78)',  'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',  'rgb(91,176,72)',   // front
+ //  'rgb(78,174,76)',  'rgb(78,174,76)',  'rgb(108,145,75)', 'rgb(129,137,64)', 'rgb(129,137,64)', 'rgb(91,176,72)',   // front also
+ //  'rgb(41,177,113)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)', 'rgb(129,152,84)',  // front also also
+ //  'rgb(43,174,116)', 'rgb(42,178,112)', 'rgb(69,176,68)',  'rgb(115,130,71)', 'rgb(129,137,62)', 'rgb(221,136,122)', // front here too
+ //  'rgb(89,178,68)',  'rgb(41,177,120)', 'rgb(35,157,82)',  'rgb(106,146,75)', 'rgb(115,130,71)', 'rgb(129,137,64)',  // mostly "edge spiral"
+
+	// ]
+
+  logo_colors = ['rgb(200,200,200)']
 
 
 
@@ -119,17 +119,31 @@ module.exports = function createLogo (options_) {
     y: 0
   }
     
-	function createRect(x1, y1, x2, y2, x3, y3, x4, y4) {
-		var rect = createNode('polygon')
-		setAttribute(rect, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + ' ' + x4 +',' + y4)
-		setAttribute(rect, 'style', "fill:" + yieldColor() + ";stroke:black;stroke-width:" + lineThickness)
-		container.appendChild(rect)
-		return rect
+  function Polygon (svg, zIndex) {
+    this.svg = svg
+    this.zIndex = zIndex
+  }
+
+  function compareZ (a, b) {
+    return b.zIndex - a.zIndex
+  }
+
+
+	function createTriangle(x1, y1, x2, y2, x3, y3) {
+		var tri = createNode('polygon')
+		setAttribute(tri, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3)
+		setAttribute(tri, 'style', "fill:" + yieldColor() + ";stroke:black;stroke-width:" + lineThickness)
+		container.appendChild(tri)
+		return tri
 	}
 
-	function updateRect(x1, y1, x2, y2, x3, y3, x4, y4, polygon) {
-    setAttribute(polygon.svg, 'points', x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3 + ' ' + x4 +',' + y4);
+	function updateTri(x1, y1, x2, y2, x3, y3, polygon) {
+    setAttribute(polygon.svg, 'points', x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3);
 	}
+
+  function updateColor(polygon, color) {
+    setAttribute(polygon.svg, 'style', 'fill:' + color)
+  }
 
 	function buildAnnulus(mrad,hrad,centerX,centerY) {
 		hexes = []
@@ -207,39 +221,104 @@ module.exports = function createLogo (options_) {
   	else { return 5 }
   }
 
+  VERT_CONST = 12.15
+  function turnyRender(hex, vert) {
+   return (Math.cos(rad(60 * vert - VERT_CONST)) * Math.sin(rad(30 * hex + offset))) + (Math.sin(rad(60 * vert - VERT_CONST)) * Math.cos(rad(30 * hex + offset)))
+  }
+
 	function buildPolygons() {
-    for (let loops = 0; loops < 6; loops++) {
-      hexitr = ((loops + 17) * 9) % 11; // the non-euclidian magic
-      for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-        polygons.push( 
+    for (let hexitr = 0; hexitr < hexes.length; hexitr++) {
+      for (let vertitr = 0; vertitr < 6; vertitr++) {
+
+        p1 = [hexes[hexitr][vertitr][0], hexes[hexitr][vertitr][1], hexes[hexitr][vertitr][2]]
+        p2 = [hexes[nextHex(hexitr)][vertitr][0], hexes[nextHex(hexitr)][vertitr][1], hexes[nextHex(hexitr)][vertitr][2]]
+        p3 = [hexes[nextHex(hexitr)][nextVertex(vertitr)][0], hexes[nextHex(hexitr)][nextVertex(vertitr)][1], hexes[nextHex(hexitr)][nextVertex(vertitr)][2]]
+        p4 = [hexes[hexitr][nextVertex(vertitr)][0], hexes[hexitr][nextVertex(vertitr)][1], hexes[hexitr][nextVertex(vertitr)][2]]
+
+        poly1ZMax = Math.max(Math.max(p1[2], p2[2]), p3[2])
+        poly1ZMin = Math.min(Math.min(p1[2], p2[2]), p3[2])
+        poly2ZMax = Math.max(Math.max(p1[2], p3[2]), p4[2])
+        poly2ZMin = Math.min(Math.min(p1[2], p3[2]), p4[2])
+
+        polygons.push(
           new Polygon(
-				    createRect(
-  		        hexes[hexitr][loops][0], hexes[hexitr][loops][1], 
-  		        hexes[nextHex(hexitr)][loops][0], hexes[nextHex(hexitr)][loops][1],
-  		        hexes[nextHex(hexitr)][nextVertex(loops)][0], hexes[nextHex(hexitr)][nextVertex(loops)][1],
-  		        hexes[hexitr][nextVertex(loops)][0], hexes[hexitr][nextVertex(loops)][1]
-  		        )
-            )
-          );
-		    hexitr = nextHex(hexitr);
-			}
+            createTriangle(
+              p1[0], p1[1],
+              p2[0], p2[1],
+              p3[0], p3[1]
+            ),
+            turnyRender(hexitr, vertitr)
+          )
+        )
+        polygons.push(
+          new Polygon(
+            createTriangle(
+              p1[0], p1[1],
+              p3[0], p3[1], 
+              p4[0], p4[1]
+              ),
+            turnyRender(hexitr, vertitr)
+
+          )
+        )
+      }
     }
+    polygons.sort(compareZ)
 	}
 
 	function updatePolygons() {
-    for (let loops = 0; loops < 6; loops++) {
-        hexitr = ((loops+17) * 9) % 11;  // the non-euclidian magic
-        for(hexesDrawn = 0; hexesDrawn < 12; hexesDrawn++) {
-		 	    updateRect(
-      	    hexes[hexitr][loops][0], hexes[hexitr][loops][1], 
-           	hexes[nextHex(hexitr)][loops][0], hexes[nextHex(hexitr)][loops][1],
-      	    hexes[nextHex(hexitr)][nextVertex(loops)][0], hexes[nextHex(hexitr)][nextVertex(loops)][1],
-      	    hexes[hexitr][nextVertex(loops)][0], hexes[hexitr][nextVertex(loops)][1],
-      	    polygons[((hexesDrawn * 6) + loops) % 72]
-          );			
-          hexitr = nextHex(hexitr);
-          }
-	    }
+    for (let hexitr = 0; hexitr < hexes.length; hexitr++) {
+      for (let vertitr = 0; vertitr < 6; vertitr++) {
+
+
+
+        p1 = [hexes[hexitr][vertitr][0], hexes[hexitr][vertitr][1], hexes[hexitr][vertitr][2]]
+        p2 = [hexes[nextHex(hexitr)][vertitr][0], hexes[nextHex(hexitr)][vertitr][1], hexes[nextHex(hexitr)][vertitr][2]]
+        p3 = [hexes[nextHex(hexitr)][nextVertex(vertitr)][0], hexes[nextHex(hexitr)][nextVertex(vertitr)][1], hexes[nextHex(hexitr)][nextVertex(vertitr)][2]]
+        p4 = [hexes[hexitr][nextVertex(vertitr)][0], hexes[hexitr][nextVertex(vertitr)][1], hexes[hexitr][nextVertex(vertitr)][2]]
+
+        poly1ZMax = Math.max(Math.max(p1[2], p2[2]), p3[2])
+        poly1ZMin = Math.min(Math.min(p1[2], p2[2]), p3[2])
+        poly2ZMax = Math.max(Math.max(p1[2], p3[2]), p4[2])
+        poly2ZMin = Math.min(Math.min(p1[2], p3[2]), p4[2])
+
+        // if (vertitr == 1) {
+        //   updateColor(polygons[(hexitr*6 + vertitr) * 2], 'rgb(100,200,300)' + ";stroke:black;stroke-width:" + lineThickness)
+        //   updateColor(polygons[(hexitr*6 + vertitr) * 2 + 1], 'rgb(100,200,300)' + ";stroke:black;stroke-width:" + lineThickness)
+        // }
+        // else {
+        //   updateColor(polygons[(hexitr*6 + vertitr) * 2], 'rgb(300, 300, 300)' + ";stroke:black;stroke-width:" + lineThickness)
+        //   updateColor(polygons[(hexitr*6 + vertitr) * 2 + 1], 'rgb(300, 300, 300)' + ";stroke:black;stroke-width:" + lineThickness)
+        // }
+
+
+            updateTri(
+              p1[0], p1[1],
+              p2[0], p2[1],
+              p3[0], p3[1],
+              polygons[(hexitr*6 + vertitr) * 2] 
+              )
+         
+            polygons[(hexitr*6 + vertitr) * 2].zIndex = turnyRender(hexitr, vertitr)
+
+            updateTri(
+              p1[0], p1[1],
+              p3[0], p3[1], 
+              p4[0], p4[1],
+              polygons[(hexitr*6 + vertitr) * 2 + 1] 
+              )
+
+            polygons[(hexitr*6 + vertitr) * 2 + 1].zIndex = turnyRender(hexitr, vertitr) 
+
+      }
+    }
+    polygons.sort(compareZ)
+    for (i = 0; i < polygons.length; ++i) {
+    //  console.log(polygons[i].zIndex)
+      if (polygons[i].zIndex > 0) {
+      container.appendChild(polygons[i].svg)
+    }
+    }
 	}
 
   function setTurnTo(target) {
