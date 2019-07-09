@@ -144,13 +144,14 @@ module.exports = function createLogo (options_) {
   function createRectangle(x1, y1, x2, y2, x3, y3, x4, y4) {
     var rect = createNode('polygon')
     setAttribute(rect, 'points', x1 + "," + y1 + ' ' + x2 + ',' + y2 + " " + x3 + ',' + y3 + " " + x4 + "," + y4)
-    setAttribute(rect, 'style', "fill:" + yieldColor() + ";stroke:black;stroke-width:" + lineThickness)
     container.appendChild(rect)
     return rect
   }  
 
   function updateRect(x1, y1, x2, y2, x3, y3, x4, y4, polygon) {
     setAttribute(polygon.svg, 'points', x1 + ',' + y1 + ' ' + x2 + ',' + y2 + ' ' + x3 + ',' + y3 + ' ' + x4 + ',' + y4);
+    setAttribute(polygon.svg, 'style', "fill:" + yieldColor() + ";stroke:black;stroke-width:" + lineThickness)
+
   }
 
 	function updateTri(x1, y1, x2, y2, x3, y3, polygon) {
@@ -251,11 +252,6 @@ module.exports = function createLogo (options_) {
         p3 = [hexes[nextHex(hexitr)][nextVertex(vertitr)][0], hexes[nextHex(hexitr)][nextVertex(vertitr)][1], hexes[nextHex(hexitr)][nextVertex(vertitr)][2]]
         p4 = [hexes[hexitr][nextVertex(vertitr)][0], hexes[hexitr][nextVertex(vertitr)][1], hexes[hexitr][nextVertex(vertitr)][2]]
 
-        poly1ZMax = Math.max(Math.max(p1[2], p2[2]), p3[2])
-        poly1ZMin = Math.min(Math.min(p1[2], p2[2]), p3[2])
-        poly2ZMax = Math.max(Math.max(p1[2], p3[2]), p4[2])
-        poly2ZMin = Math.min(Math.min(p1[2], p3[2]), p4[2])
-
         polygons.push(
           new Polygon(
             createRectangle(
@@ -296,27 +292,10 @@ module.exports = function createLogo (options_) {
     for (let hexitr = 0; hexitr < hexes.length; hexitr++) {
       for (let vertitr = 0; vertitr < 6; vertitr++) {
 
-
-
         p1 = [hexes[hexitr][vertitr][0], hexes[hexitr][vertitr][1], hexes[hexitr][vertitr][2]]
         p2 = [hexes[nextHex(hexitr)][vertitr][0], hexes[nextHex(hexitr)][vertitr][1], hexes[nextHex(hexitr)][vertitr][2]]
         p3 = [hexes[nextHex(hexitr)][nextVertex(vertitr)][0], hexes[nextHex(hexitr)][nextVertex(vertitr)][1], hexes[nextHex(hexitr)][nextVertex(vertitr)][2]]
         p4 = [hexes[hexitr][nextVertex(vertitr)][0], hexes[hexitr][nextVertex(vertitr)][1], hexes[hexitr][nextVertex(vertitr)][2]]
-
-        poly1ZMax = Math.max(Math.max(p1[2], p2[2]), p3[2])
-        poly1ZMin = Math.min(Math.min(p1[2], p2[2]), p3[2])
-        poly2ZMax = Math.max(Math.max(p1[2], p3[2]), p4[2])
-        poly2ZMin = Math.min(Math.min(p1[2], p3[2]), p4[2])
-
-        // if (vertitr == 1) {
-        //   updateColor(polygons[(hexitr*6 + vertitr) * 2], 'rgb(100,200,300)' + ";stroke:black;stroke-width:" + lineThickness)
-        //   updateColor(polygons[(hexitr*6 + vertitr) * 2 + 1], 'rgb(100,200,300)' + ";stroke:black;stroke-width:" + lineThickness)
-        // }
-        // else {
-        //   updateColor(polygons[(hexitr*6 + vertitr) * 2], 'rgb(300, 300, 300)' + ";stroke:black;stroke-width:" + lineThickness)
-        //   updateColor(polygons[(hexitr*6 + vertitr) * 2 + 1], 'rgb(300, 300, 300)' + ";stroke:black;stroke-width:" + lineThickness)
-        // }
-
 
         updateRect(
               p1[0], p1[1],
@@ -327,35 +306,15 @@ module.exports = function createLogo (options_) {
               )
 
           polygons[(hexitr*6 + vertitr)].zIndex = turnyRender(hexitr, vertitr) 
-          // )
-
-          //   updateTri(
-          //     p1[0], p1[1],
-          //     p2[0], p2[1],
-          //     p3[0], p3[1],
-          //     polygons[(hexitr*6 + vertitr) * 2] 
-          //     )
-         
-          //   polygons[(hexitr*6 + vertitr) * 2].zIndex = turnyRender(hexitr, vertitr)
-
-          //   updateTri(
-          //     p1[0], p1[1],
-          //     p3[0], p3[1], 
-          //     p4[0], p4[1],
-          //     polygons[(hexitr*6 + vertitr) * 2 + 1] 
-          //     )
-
-          //   polygons[(hexitr*6 + vertitr) * 2 + 1].zIndex = turnyRender(hexitr, vertitr) 
 
       }
     }
+    //gonnaDraw = polygons
     polygons.sort(compareZ)
     for (i = 0; i < polygons.length; ++i) {
-    //  console.log(polygons[i].zIndex)
-      if (polygons[i].zIndex > 0) {
       container.appendChild(polygons[i].svg)
     }
-    }
+    
 	}
 
   function setTurnTo(target) {
