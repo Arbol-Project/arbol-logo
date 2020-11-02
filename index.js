@@ -47,7 +47,7 @@ module.exports = function createLogo (options_) {
   var polygons = []
 	var hexes = []
   var rectangles = []
-	var offset = -78
+	var offset = -75.1
 	var turnRate = 3.5
 
 	var X = new Float32Array([1, 0, 0])
@@ -120,7 +120,7 @@ module.exports = function createLogo (options_) {
         hex.push([
         	centroid.x, 
         	Math.sin(rad(vertex * 60)) * hrad + centroid.y,
-        	Math.cos(rad(vertex * 60)) * hrad + hrad/2
+        	Math.cos(rad(vertex * 60)) * hrad * (103/88) + hrad/2
         ])
       }
       hexes.push(hex)
